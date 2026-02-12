@@ -1,0 +1,159 @@
+{
+  "Authentication Options": {
+    "summary": "Create Tokenized Card Authentication Options",
+    "value": {
+      "clientCorrelationId": "8989898989898",
+      "sessionInformation": {
+        "secureToken": ""
+      },
+      "orderInformation": {
+        "amountDetails": {
+          "totalAmount": "102.21",
+          "currency": "840"
+        }
+      },
+      "merchantInformation": {
+        "merchantDescriptor": {
+       "name": "S2F0ZXJpbmEgdGVzdCB0aGUgYmVzdCA",
+      "url": "aHR0cHM6Ly93d3cuTWVyY2hhbnQtVlphRjVYQmouY29t"
+        }
+      },
+      "deviceInformation": {
+        "platformType": "WEB",
+        "ipAddress": "127.0.0.1",
+        "httpAcceptContent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36",
+        "httpBrowserLanguage": "en-US",
+        "httpBrowserJavaEnabled": true,
+        "httpBrowserJavaScriptEnabled": true,
+        "httpBrowserColorDepth": "24",
+        "httpBrowserScreenHeight": "1080",
+        "httpBrowserScreenWidth": "1920",
+        "httpBrowserTimeDifference": "-480",
+        "userAgentBrowserValue": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"
+      }
+    }
+  },
+  "OTP Create": {
+    "summary": "Create a One-Time Password for Tokenized Card Authentication",
+    "value": {
+      "clientCorrelationId": "aB3cD4eF5gH6iJ7kL8mN9oP0qR1sT2uV3wX",
+      "stepUpOption": {
+        "id": ""
+      }
+    }
+  },
+  "Validate OTP": {
+    "summary": "Validate a One-Time Password or Issuer Authentication Code",
+    "value": {
+      "clientCorrelationId": "aB3cD4eF5gH6iJ7kL8mN9oP0qR1sT2uV3wX",
+      "stepUpOption": {
+        "id": "YWEwMjFhZmFkZDU4ZWI0NDJjYTM0MzY4OTY1YjdhMDE="
+      },
+      "otp": "MGZlY2Yw"
+     
+    }
+  },
+  "Create Registration": {
+    "summary": "Create Tokenized Card Authentication Registration",
+    "value": {
+    
+    "clientCorrelationId": "{{tms-clientcorrelation-id}}",
+    "sessionInformation": {
+        "secureToken": "ezAwMX06AAQzMjBBpkpPK72vZtLWyBVyV6u_V5pWfqNaHW70y_UKXzCsauvs8r60_nxBz9WXsiTlU8cdCvZvZ4FXyogNonnOQxmmNYSeOYaylKQyXFvocKLm0m27h9A1GrJOgD3ueghoce0T-Nqs1jHM62XdmpgL1SJ_PskCnJI6fjHLvOolyj0GgdunQQRjDdvXiow1D29V-zzAoNx-9UjbQlcGyJtrLitB84OFg0sRkW7VE6N0QbnsxbWRsrd_TjLmTmE6qSKpO8OxEiMq9syVk5m4g9Docd-dF2ynHFJ4CALQ92XejIsz7F5_Phwp2fMaklxUM6FqlUwp4XOqF3A8PP6_LqfskVw9hd1Fjotin-uj-RV9JgpB450-KStuAJp8Pew3_vOkyj71FTRmcjh0oeBLmOlZRPyhYoDu-hhknAK4Jx1-pGi9QsFazkmoWBkA7iFKl7-Nzub8EPavHfXdde7MRDTuZFdPrACln9_m2r0OWYWYrUEUIgDM3D3Fw4ihxpD1CKVrqJXWlOOgLEbaoOfo0OCaiyiYnuYG1pHmjy4LWWg1GZ8oEbspnEJZGgvI-EOWr0xZ3E65fvvrP-RGDFENtO1n2V9G-6pDzfwtm1cTHXw9LkNqH6A8qP-u3u2YG1h8WT4Ro7mlfAlR3Na06vW7CQBMXFfI7mHjJwT8fkyxYF40IJHbSEJ6aiMn8Jp9Wjoe7aUOMR8_wdKT2pvKEQAAVEshCH2zpJOJ9NE2b5mbX2IfPZMEGDbxLpuiE-9K9N7OFcNkXd1i2p7h7zhv2wrJcgGf91hTmlPBIknf2Rjk_U-fRs80JHqaLta4rdbb4CyQLZWETM-TkP08mAPaBsfTTGHw6SLLipwroSoiM-Vu2-Uc76YK4x4hVN7w4Z13Py7PlteQ03IhscTzFYAB5WAUBHU1Xws1kF7PHrVmIJTpgjfcvnikYUT6-UbLHQ"
+    },
+    "authenticatorRenderMethod": "IFRAME",
+    "orderInformation": {
+        "amountDetails": {
+                  "totalAmount": "102.21",
+          "currency": "840"
+        },
+        "billTo": {
+            "email": "homer@aol.com",
+            "phoneNumber": "555-5555"
+        }
+    },
+    "merchantInformation": {
+        "merchantDescriptor": {
+          "name": "S2F0ZXJpbmEgdGVzdCB0aGUgYmVzdCA",
+           "url": "aHR0cHM6Ly93d3cuTWVyY2hhbnQtVlphRjVYQmouY29t"
+        }
+    },
+    "deviceInformation": {
+        "platformType": "WEB",
+        "ipAddress": "104.28.3.217",
+        "httpAcceptContent": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "httpBrowserLanguage": "en-US",
+        "httpBrowserJavaEnabled": false,
+        "httpBrowserJavaScriptEnabled": true,
+        "httpBrowserColorDepth": "24",
+        "httpBrowserScreenHeight": "1080",
+        "httpBrowserScreenWidth": "1920",
+        "httpBrowserTimeDifference": "420",
+        "userAgentBrowserValue": "Mozilla/5.0(WindowsNT10.0;Win64;x64)AppleWebKit/537.36(KHTML,likeGecko)Chrome/134.0.0.0Safari/537.36Edg/134.0.0.0"
+    },
+    "buyerInformation": {
+        "language": "en_US"
+    }
+}
+    
+    }
+  ,
+  "Payment Credentials": {
+    "summary": "Create Tokenized Credentials with Authenticated Passkey Service Credentials",
+    "value": {
+    
+    "clientCorrelationId": "9af3cfe5-a12c-465d-842b-311ab7ba0337",
+  "transactionType": "ECOM",
+  "orderInformation": {
+    "billTo": {
+            "firstName": "John",
+            "lastName": "Doe",
+            "email": "test@cybs.com",
+            "address1": "1 Market St",
+            "locality": "San Francisco",
+            "administrativeArea": "CA",
+            "postalCode": "94105",
+            "country": "US"
+        },
+    "amountDetails": {
+      "totalAmount": "102.21",
+      "currency": "840"
+    }
+  },
+  "merchantInformation": {
+    "merchantDescriptor": {
+  "name": "TWVyY2hhbnQgVlphRjVYQmo",
+      "url": "aHR0cHM6Ly93d3cuTWVyY2hhbnQtVlphRjVYQmouY29t"
+    }
+  },
+  "authenticatedIdentities": [
+    {
+         "provider": "VISA_PAYMENT_PASSKEY",
+            "id": "",
+            "relyingPartyId": "dnRzLmF1dGgudmlzYS5jb20=",
+      "data": ""
+    }
+    ]
+  ,
+  "deviceInformation": {
+    "platformType":"WINDOWS",
+    "ipAddress": "192.168.1.45",
+    "httpAcceptContent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36",
+    "httpBrowserLanguage": "en-US",
+    "httpBrowserJavaEnabled": true,
+    "httpBrowserJavaScriptEnabled": true,
+    "httpBrowserColorDepth": "24",
+    "httpBrowserScreenHeight": "1080",
+    "httpBrowserScreenWidth": "1920",
+    "httpBrowserTimeDifference": "-480",
+    "userAgentBrowserValue": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"
+  }
+    
+    
+      
+      
+      
+      
+    }
+  }
+}

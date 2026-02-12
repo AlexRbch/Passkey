@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TMS Passkeys - Oleksii SDK Testing Tool</title>
+    <style>
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        .wrapper {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            height: 100%;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4A90E2;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            height: 100%;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .column#coln2 {
+            max-height: 100%; /* Ensures the second column takes all available height but does not scroll */
+        }
+
+        .column#coln3 {
+            max-height: 100%; /* Ensures the second column takes all available height but does not scroll */
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .input-group select,
+        .input-group textarea,
+        .input-group button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .input-group button {
+            background-color: #4A90E2;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .input-group button:hover {
+            background-color: #357ABD;
+        }
+
+        #logBox {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: none;
+            margin-top: 20px;
+            overflow: auto; /* Ensures scroll bars are added if content exceeds size */
+            max-height: calc(100% - 40px); /* Ensures logBox uses all available height minus margin */
+        }
+    </style>
+
+</head>
+
+<body>
+<div class="wrapper">
+    
+    
+   <h1> <a href="https://sandbox.auth.visa.com/" target="_blank" rel="noopener noreferrer"> TMS Passkeys - Oleksii SDK Testing Tool</a></h1>
+    
+  
+    <div class="container">
+        <div class="column">
+            <div class="input-group">
+                <b>Select Environment:</b>
+                <select id="env-param" name="env-param">
+                    <option value="qa">QA</option>
+                    <option value="qa1">QA1</option>
+                    <option value="qa2">QA2</option>
+                    <option value="cert">Cert</option>
+                    <option value="sbx">SBX</option>
+                </select>
+                <input type="checkbox" id="custom-param" name="custom-param" value="custom" style="margin-top: 8px;">
+                <label for="custom-param" style="display: inline;">Customize Query Params</label>
+                <div id="custom-params" style="display: none;">
+                    <input type="text" id="custom-apikey" name="custom-apikey" placeholder="Enter apikey" value='7FHE5LL5WUC6Y2B0TXJA21B552D9gwg-qst7xs6t7q93wnpO0'>
+                    <input type="text" id="custom-appID" name="custom-appID" placeholder="Enter externalAppId" value='CybsSuperProfileTMS'>
+                </div>
+                <button onclick="initIframe()">Load Iframe</button>
+            </div>
+
+            <div class="input-group">
+                <b>Initiate Init Command</b>
+                <textarea id="init-id" name="init-id" placeholder="Enter Client Id"></textarea>
+                <button onclick="submitInitParam()">Submit</button>
+             </div>
+             
+             <div class="input-group">
+                  <textarea  name="init-id-form" id="tmstkn" placeholder="tokenizedCard.Id"></textarea>
+                <button onclick="authoptionsTMS()">Authentication-options</button>
+            </div>
+             
+            	 
+		    <div class="input-group">
+				   <div id="options-container">   </div>
+               
+            </div>
+          
+           <div class="input-group">
+          <div id="otp-container"></div>
+             </div>
+          
+            
+            <div class="input-group">
+                <b>Initiate Auth Command</b>
+                <select id="auth-param" name="auth-param">
+                    <option value="REGISTER">register/attestation</option>
+                    <option value="AUTHENTICATE">authenticate/assertion</option>
+                </select>
+                <select id="auth-intg" name="auth-intg">
+                    <option value="popup">popup</option>
+                    <option value="iframe">iframe</option>
+                </select>
+                <textarea id="auth-payload" name="auth-payload" placeholder="Paste Auth Payload from GetAttestationOptions Response"></textarea>
+                <textarea id="auth-id" name="auth-id" placeholder="Paste Auth Identifier from GetAttestationOptions Response"></textarea>
+
+                <button onclick="submitAuthParam()">Submit</button>
+            </div>
+            
+               <div class="input-group">
+          <div id="btn-container"></div>
+             </div>
+            
+            <div class="input-group">
+                <b>Close iFrame</b>
+                <button onclick="submitCloseParam()">Initiate Close Command</button>
+            </div>
+        </div>
+        <div class="column" id="coln2">
+            Logging messages received by TR from VTS iFrame:
+            <!-- START GENAI@GHCOPILOT -->
+            <div class="button-container">
+                <button onclick="clearLog()">Clear Log</button>
+                <button onclick="copySecureToken()">Copy Secure Token</button>
+                <button onclick="copyFidoBlob()">Copy Fido Blob</button>
+            </div>
+            <!-- END GENAI@GHCOPILOT -->
+            <textarea id="logBox" readonly placeholder="Log output will appear here..."></textarea>
+        </div>
+        <div class="column" id="coln3">
+
+        </div>
+    </div>
+</div>
+
+<script src="tr-sdk.js"> </script>
+</body>
+</html>
