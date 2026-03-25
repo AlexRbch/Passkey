@@ -4,9 +4,9 @@ session_start();
 header('Content-Type: application/json; charset=utf-8');
 
 
-$merchantKeyId = 'c57f917a-4808-4832-8b4d-c8aecb7c8a62';
-$merchantSecretKey = '9CwHGnwdxMarmqxteqjFW2w85jpD6fuVdfMLVCiiQY8=';
-$merchantId = 'test_test1111001';
+$merchantKeyId = '';
+$merchantSecretKey = '';
+$merchantId = '';
 global $SessionToken;
 global $tokenizedCardId;
 
@@ -20,19 +20,19 @@ function logMessage($message)
     file_put_contents($logFile, "[$time] $message\n", FILE_APPEND);
 }
 
-$logFile ='/home/polka9/visabest.tech/www/passkeyLOCKED/log9.log';
+$logFile ='./www/passkeyLOCKED/log9.log';
 if (!is_dir(dirname($logFile))) {
-    // Папка не існує
+
     error_log('Log dir missing: ' . dirname($logFile));
 } elseif (!is_writable(dirname($logFile))) {
-    // Немає прав на директорію
+
     error_log('Log dir not writable: ' . dirname($logFile));
 }
 
-// 1) Читаємо JSON від клієнта
+
 $raw    = file_get_contents('php://input');
 $client = json_decode($raw, true) ?: [];
-// Мінімальна валідація/дефолти
+
 
 $action = $client['orderInformation']['data']['action'];
 
@@ -40,18 +40,18 @@ $action = $client['orderInformation']['data']['action'];
 
 
 
-//print_r($client);
+
 
 $requestFile = __DIR__ . '/data.json';
 $requestHost = 'apitest.cybersource.com';
 
-// Завантажуємо запити
+
 if (!file_exists($requestFile)) {
     die("Файл $requestFile не знайдено\n");
 }
 $json = file_get_contents($requestFile);
 $requests = json_decode($json, true);
-//print_r($requests);
+
 
 if ($requests === null) {
     die("Не вдалося розпарсити $requestFile\n");
@@ -80,7 +80,7 @@ switch ($action) {
      
         $_SESSION['$tokenizedCardId'] =$id;
         
-       // echo "Create Tokenized Card Authentication Options";
+
         $payload=$requests['Authentication Options']['value'];
         $payload['sessionInformation']['secureToken']=$session;
         $payload['clientCorrelationId']=$guid;
@@ -101,7 +101,7 @@ switch ($action) {
         
         
 if (isset($client['orderInformation']['data']['ds'])) {
-//3Ds scenario 
+
 
 
         $payload=$requests['Create Registration']['value'];
@@ -116,7 +116,7 @@ if (isset($client['orderInformation']['data']['ds'])) {
   break;
 
 } else {
-    // OTP scenario
+    
    
        $idotp= $client['orderInformation']['data']['authMethodId'];
        $payload=$requests['OTP Create']['value'];
@@ -171,13 +171,8 @@ if (isset($client['orderInformation']['data']['ds'])) {
         $fidoBlob= $client['orderInformation']['data']['fidoBlob'];
         $idn= $client['orderInformation']['data']['idn'];
         $payload=$requests['Payment Credentials']['value'];
-        
-        //$payload['sessionInformation']['secureToken']=$_SESSION['$sessionToken'];
         $payload['clientCorrelationId']=$_SESSION['$guid'];
-       // $payload['authenticatedIdentities']['id']=$idn;
-      //   $payload['authenticatedIdentities']['data']=$fidoBlob;
-         
-         
+      
          $payload['authenticatedIdentities'] = [[
     'id' => $idn,
     'data' => $fidoBlob,
@@ -194,12 +189,7 @@ if (isset($client['orderInformation']['data']['ds'])) {
         $endpoint=$_SESSION['$tokenizedCardId']."/payment-credentials";
         
        $rez=authoptionsTMSGPC($method,$endpoint,$newJson,$merchantKeyId, $merchantSecretKey,$merchantId);
-        
-        
-        
-        
-        
-        
+             
         break;
    
     default:
@@ -211,11 +201,6 @@ if (isset($client['orderInformation']['data']['ds'])) {
 function authoptionsTMS ($method,$endpoint,$payload,$merchantKeyId, $merchantSecretKey,$merchantId){
 
 logMessage($payload);
-//$time = date('Y-m-d H:i:s');
-//file_put_contents($logFile, "[$time] $payload\n", FILE_APPEND);
-//echo ( $payload);
-
-
 
 $requestHost = 'apitest.visaacceptance.com';
 logMessage('https://' . $requestHost . '/tms/v2/tokenized-cards/'.$endpoint);
@@ -247,7 +232,7 @@ $response = curl_exec($ch);
 curl_close($ch);
 logMessage($response);
 
-$array1 = json_decode($payload, true); // Декодируем в массив
+$array1 = json_decode($payload, true); 
 $array2 = json_decode($response, true);
 $merged_array = array_merge($array1, $array2);
 $final_json_output = json_encode($merged_array);
@@ -263,9 +248,6 @@ echo ($final_json_output);
 function authoptionsTMSGPC ($method,$endpoint,$payload,$merchantKeyId, $merchantSecretKey,$merchantId){
 
 logMessage($payload);
-//$time = date('Y-m-d H:i:s');
-//file_put_contents($logFile, "[$time] $payload\n", FILE_APPEND);
-//echo ( $payload);
 
 
 
@@ -299,8 +281,7 @@ $response = curl_exec($ch);
 curl_close($ch);
 logMessage($response);
 
-$array1 = json_decode($payload, true); // Декодируем в массив
-
+$array1 = json_decode($payload, true); 
 $array2 = [
     'value' => $response,
     'description' => 'MLE decoded message with network token '
@@ -329,12 +310,6 @@ echo ($final_json_output);
 function authOTP ($method,$endpoint,$payload,$merchantKeyId, $merchantSecretKey,$merchantId){
 
 logMessage($payload);
-//$time = date('Y-m-d H:i:s');
-//file_put_contents($logFile, "[$time] $payload\n", FILE_APPEND);
-//echo ( $payload);
-
-
-
 $requestHost = 'apitest.visaacceptance.com';
 logMessage('https://' . $requestHost . '/tms/v2/tokenized-cards/'.$endpoint);
 
@@ -365,7 +340,7 @@ $response = curl_exec($ch);
 curl_close($ch);
 logMessage($response);
 
-$array1 = json_decode($payload, true); // Декодируем в массив
+$array1 = json_decode($payload, true); 
 $array2 = json_decode($response, true);
 $merged_array = array_merge($array1, $array2);
 $final_json_output = json_encode($merged_array);
@@ -387,15 +362,14 @@ echo ($final_json_output);
 
 
 function generateGUID() {
-    // Generate 16 bytes (128 bits) of random data
+
     $data = openssl_random_pseudo_bytes(16);
 
-    // Set version to 4 (random)
+ 
     $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
-    // Set bits 6-7 to 10
+
     $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
 
-    // Output the 36-character UUID string
     return sprintf(
         '%s-%s-%s-%s-%s',
         bin2hex(substr($data, 0, 4)),
