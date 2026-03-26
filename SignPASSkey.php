@@ -11,8 +11,6 @@ global $SessionToken;
 global $tokenizedCardId;
 
 
-
-
 function logMessage($message)
 {
     global $logFile;
@@ -20,7 +18,7 @@ function logMessage($message)
     file_put_contents($logFile, "[$time] $message\n", FILE_APPEND);
 }
 
-$logFile ='./www/passkeyLOCKED/log9.log';
+$logFile = './www/passkeyLOCKED/log9.log';
 if (!is_dir(dirname($logFile))) {
 
     error_log('Log dir missing: ' . dirname($logFile));
@@ -30,16 +28,11 @@ if (!is_dir(dirname($logFile))) {
 }
 
 
-$raw    = file_get_contents('php://input');
+$raw = file_get_contents('php://input');
 $client = json_decode($raw, true) ?: [];
 
 
 $action = $client['orderInformation']['data']['action'];
-
-
-
-
-
 
 
 $requestFile = __DIR__ . '/data.json';
@@ -58,314 +51,265 @@ if ($requests === null) {
 }
 
 
-
-
-
-
-
-
-
 switch ($action) {
     case "authoptionsTMS":
-        
-        $guid=generateGUID();
-        $_SESSION['$guid'] =$guid;
-       
-       
-        
-        $session = $client['orderInformation']['data']['sessionToken'];
-        $_SESSION['$sessionToken'] =$session;
-        $SessionToken=$session;
-        $id = $client['orderInformation']['data']['TMStoken'];
-     
-        $_SESSION['$tokenizedCardId'] =$id;
-        
 
-        $payload=$requests['Authentication Options']['value'];
-        $payload['sessionInformation']['secureToken']=$session;
-        $payload['clientCorrelationId']=$guid;
-         
-      
-        $newJson = json_encode( $payload,  JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+        $guid = generateGUID();
+        $_SESSION['$guid'] = $guid;
+
+
+        $session = $client['orderInformation']['data']['sessionToken'];
+        $_SESSION['$sessionToken'] = $session;
+        $SessionToken = $session;
+        $id = $client['orderInformation']['data']['TMStoken'];
+
+        $_SESSION['$tokenizedCardId'] = $id;
+
+
+        $payload = $requests['Authentication Options']['value'];
+        $payload['sessionInformation']['secureToken'] = $session;
+        $payload['clientCorrelationId'] = $guid;
+
+
+        $newJson = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
         logMessage($newJson);
-        $method="POST";
-        $endpoint=$id."/authentication-options";
-        
-        authoptionsTMS($method,$endpoint,$newJson,$merchantKeyId, $merchantSecretKey,$merchantId);
-        
-        
-        
-        
+        $method = "POST";
+        $endpoint = $id . "/authentication-options";
+
+        authoptionsTMS($method, $endpoint, $newJson, $merchantKeyId, $merchantSecretKey, $merchantId);
+
+
         break;
     case "auth":
-        
-        
-if (isset($client['orderInformation']['data']['ds'])) {
 
 
+        if (isset($client['orderInformation']['data']['ds'])) {
 
-        $payload=$requests['Create Registration']['value'];
-        $payload['sessionInformation']['secureToken']=$_SESSION['$sessionToken'];
-        $payload['clientCorrelationId']=$_SESSION['$guid'];
-        
-        $newJson = json_encode( $payload,  JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-        $method="POST";
-        $endpoint=$_SESSION['$tokenizedCardId']."/authentication-registrations";
-        
-       authoptionsTMS($method,$endpoint,$newJson,$merchantKeyId, $merchantSecretKey,$merchantId);
-  break;
 
-} else {
-    
-   
-       $idotp= $client['orderInformation']['data']['authMethodId'];
-       $payload=$requests['OTP Create']['value'];
-       $payload['stepUpOption']['id']=$idotp;
-       $payload['clientCorrelationId']= $_SESSION['$guid'];
-       $_SESSION['authMethodId']=$idotp;
-        $newJson = json_encode( $payload,  JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-        $method="POST";
-       
-        $endpoint= $_SESSION['$tokenizedCardId']."/authentication-options/one-time-passwords";
-       authoptionsTMS($method,$endpoint,$newJson,$merchantKeyId, $merchantSecretKey,$merchantId);
-    $payload=$requests['OTP Create']['value'];
-      
-        break;
-    
-}
-        
-        
-        
-        
-       
-        
-      
-        
+            $payload = $requests['Create Registration']['value'];
+            $payload['sessionInformation']['secureToken'] = $_SESSION['$sessionToken'];
+            $payload['clientCorrelationId'] = $_SESSION['$guid'];
+
+            $newJson = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+            $method = "POST";
+            $endpoint = $_SESSION['$tokenizedCardId'] . "/authentication-registrations";
+
+            authoptionsTMS($method, $endpoint, $newJson, $merchantKeyId, $merchantSecretKey, $merchantId);
+            break;
+
+        } else {
+
+
+            $idotp = $client['orderInformation']['data']['authMethodId'];
+            $payload = $requests['OTP Create']['value'];
+            $payload['stepUpOption']['id'] = $idotp;
+            $payload['clientCorrelationId'] = $_SESSION['$guid'];
+            $_SESSION['authMethodId'] = $idotp;
+            $newJson = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+            $method = "POST";
+
+            $endpoint = $_SESSION['$tokenizedCardId'] . "/authentication-options/one-time-passwords";
+            authoptionsTMS($method, $endpoint, $newJson, $merchantKeyId, $merchantSecretKey, $merchantId);
+            $payload = $requests['OTP Create']['value'];
+
+            break;
+
+        }
+
+
     case "otp":
-        $otp= $client['orderInformation']['data']['otp'];
-        $payload=$requests['Validate OTP']['value'];
-        $payload['stepUpOption']['id']=$_SESSION['authMethodId'];
-        $payload['clientCorrelationId']= $_SESSION['$guid'];
-        $payload['otp']= $otp;
-        
-         $newJson = json_encode( $payload,  JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-        $method="POST";
-       
-        $endpoint= $_SESSION['$tokenizedCardId']."/authentication-options/validate";
-       authoptionsTMS($method,$endpoint,$newJson,$merchantKeyId, $merchantSecretKey,$merchantId);
-       
-        $payload=$requests['Create Registration']['value'];
-        $payload['sessionInformation']['secureToken']=$_SESSION['$sessionToken'];
-        $payload['clientCorrelationId']=$_SESSION['$guid'];
-        
-        $newJson = json_encode( $payload,  JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-        $method="POST";
-        $endpoint=$_SESSION['$tokenizedCardId']."/authentication-registrations";
-        
-       $rez=authoptionsTMS($method,$endpoint,$newJson,$merchantKeyId, $merchantSecretKey,$merchantId);
-       
-       break;
-       
-    case "GPC":
-        
-        $fidoBlob= $client['orderInformation']['data']['fidoBlob'];
-        $idn= $client['orderInformation']['data']['idn'];
-        $payload=$requests['Payment Credentials']['value'];
-        $payload['clientCorrelationId']=$_SESSION['$guid'];
-      
-         $payload['authenticatedIdentities'] = [[
-    'id' => $idn,
-    'data' => $fidoBlob,
-    'provider' => 'VISA_PAYMENT_PASSKEY',
-    'relyingPartyId' => 'dnRzLmF1dGgudmlzYS5jb20='
-]];
-         
-         
-         
-         
-        
-        $newJson = json_encode( $payload,  JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-        $method="POST";
-        $endpoint=$_SESSION['$tokenizedCardId']."/payment-credentials";
-        
-       $rez=authoptionsTMSGPC($method,$endpoint,$newJson,$merchantKeyId, $merchantSecretKey,$merchantId);
-             
+        $otp = $client['orderInformation']['data']['otp'];
+        $payload = $requests['Validate OTP']['value'];
+        $payload['stepUpOption']['id'] = $_SESSION['authMethodId'];
+        $payload['clientCorrelationId'] = $_SESSION['$guid'];
+        $payload['otp'] = $otp;
+
+        $newJson = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+        $method = "POST";
+
+        $endpoint = $_SESSION['$tokenizedCardId'] . "/authentication-options/validate";
+        authoptionsTMS($method, $endpoint, $newJson, $merchantKeyId, $merchantSecretKey, $merchantId);
+
+        $payload = $requests['Create Registration']['value'];
+        $payload['sessionInformation']['secureToken'] = $_SESSION['$sessionToken'];
+        $payload['clientCorrelationId'] = $_SESSION['$guid'];
+
+        $newJson = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+        $method = "POST";
+        $endpoint = $_SESSION['$tokenizedCardId'] . "/authentication-registrations";
+
+        $rez = authoptionsTMS($method, $endpoint, $newJson, $merchantKeyId, $merchantSecretKey, $merchantId);
+
         break;
-   
+
+    case "GPC":
+
+        $fidoBlob = $client['orderInformation']['data']['fidoBlob'];
+        $idn = $client['orderInformation']['data']['idn'];
+        $payload = $requests['Payment Credentials']['value'];
+        $payload['clientCorrelationId'] = $_SESSION['$guid'];
+
+        $payload['authenticatedIdentities'] = [[
+            'id' => $idn,
+            'data' => $fidoBlob,
+            'provider' => 'VISA_PAYMENT_PASSKEY',
+            'relyingPartyId' => 'dnRzLmF1dGgudmlzYS5jb20='
+        ]];
+
+
+        $newJson = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+        $method = "POST";
+        $endpoint = $_SESSION['$tokenizedCardId'] . "/payment-credentials";
+
+        $rez = authoptionsTMSGPC($method, $endpoint, $newJson, $merchantKeyId, $merchantSecretKey, $merchantId);
+
+        break;
+
     default:
         echo "Wrong case";
 }
 
 
+function authoptionsTMS($method, $endpoint, $payload, $merchantKeyId, $merchantSecretKey, $merchantId)
+{
 
-function authoptionsTMS ($method,$endpoint,$payload,$merchantKeyId, $merchantSecretKey,$merchantId){
+    logMessage($payload);
 
-logMessage($payload);
+    $requestHost = 'apitest.visaacceptance.com';
+    logMessage('https://' . $requestHost . '/tms/v2/tokenized-cards/' . $endpoint);
 
-$requestHost = 'apitest.visaacceptance.com';
-logMessage('https://' . $requestHost . '/tms/v2/tokenized-cards/'.$endpoint);
+    $signature = generateHttpSignature('post', '/tms/v2/tokenized-cards/' . $endpoint, $payload, $merchantKeyId, $merchantSecretKey, $requestHost, $merchantId);
 
-$signature = generateHttpSignature('post', '/tms/v2/tokenized-cards/'.$endpoint, $payload, $merchantKeyId, $merchantSecretKey, $requestHost, $merchantId);
-
-$ch = curl_init('https://' . $requestHost . '/tms/v2/tokenized-cards/'.$endpoint);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-curl_setopt($ch, CURLOPT_VERBOSE, true);
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    'Content-Type: application/json;charset=utf-8',
-    'v-c-merchant-id: ' . $merchantId,
-    'Date: ' . gmdate('D, d M Y H:i:s T'),
-    'Host: ' . $requestHost,
-    'Signature: ' . $signature,
-    'Digest: ' . 'SHA-256=' . base64_encode(hash('sha256', $payload, true)),
-    'User-Agent: Mozilla/5.0'
-]);
-
-
+    $ch = curl_init('https://' . $requestHost . '/tms/v2/tokenized-cards/' . $endpoint);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+    curl_setopt($ch, CURLOPT_VERBOSE, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json;charset=utf-8',
+        'v-c-merchant-id: ' . $merchantId,
+        'Date: ' . gmdate('D, d M Y H:i:s T'),
+        'Host: ' . $requestHost,
+        'Signature: ' . $signature,
+        'Digest: ' . 'SHA-256=' . base64_encode(hash('sha256', $payload, true)),
+        'User-Agent: Mozilla/5.0'
+    ]);
 
 
+    $response = curl_exec($ch);
+    curl_close($ch);
+    logMessage($response);
+
+    $array1 = json_decode($payload, true);
+    $array2 = json_decode($response, true);
+    $merged_array = array_merge($array1, $array2);
+    $final_json_output = json_encode($merged_array);
 
 
-$response = curl_exec($ch);
-curl_close($ch);
-logMessage($response);
-
-$array1 = json_decode($payload, true); 
-$array2 = json_decode($response, true);
-$merged_array = array_merge($array1, $array2);
-$final_json_output = json_encode($merged_array);
+    echo($final_json_output);
 
 
-echo ($final_json_output);
-
-    
 }
 
 
+function authoptionsTMSGPC($method, $endpoint, $payload, $merchantKeyId, $merchantSecretKey, $merchantId)
+{
 
-function authoptionsTMSGPC ($method,$endpoint,$payload,$merchantKeyId, $merchantSecretKey,$merchantId){
-
-logMessage($payload);
-
-
-
-$requestHost = 'apitest.visaacceptance.com';
-logMessage('https://' . $requestHost . '/tms/v2/tokens/'.$endpoint);
-
-$signature = generateHttpSignature('post', '/tms/v2/tokens/'.$endpoint, $payload, $merchantKeyId, $merchantSecretKey, $requestHost, $merchantId);
-
-$ch = curl_init('https://' . $requestHost . '/tms/v2/tokens/'.$endpoint);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-curl_setopt($ch, CURLOPT_VERBOSE, true);
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    'Content-Type: application/json;charset=utf-8',
-    'v-c-merchant-id: ' . $merchantId,
-    'Date: ' . gmdate('D, d M Y H:i:s T'),
-    'Host: ' . $requestHost,
-    'Signature: ' . $signature,
-    'Digest: ' . 'SHA-256=' . base64_encode(hash('sha256', $payload, true)),
-    'User-Agent: Mozilla/5.0'
-]);
+    logMessage($payload);
 
 
+    $requestHost = 'apitest.visaacceptance.com';
+    logMessage('https://' . $requestHost . '/tms/v2/tokens/' . $endpoint);
+
+    $signature = generateHttpSignature('post', '/tms/v2/tokens/' . $endpoint, $payload, $merchantKeyId, $merchantSecretKey, $requestHost, $merchantId);
+
+    $ch = curl_init('https://' . $requestHost . '/tms/v2/tokens/' . $endpoint);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+    curl_setopt($ch, CURLOPT_VERBOSE, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json;charset=utf-8',
+        'v-c-merchant-id: ' . $merchantId,
+        'Date: ' . gmdate('D, d M Y H:i:s T'),
+        'Host: ' . $requestHost,
+        'Signature: ' . $signature,
+        'Digest: ' . 'SHA-256=' . base64_encode(hash('sha256', $payload, true)),
+        'User-Agent: Mozilla/5.0'
+    ]);
 
 
+    $response = curl_exec($ch);
+    curl_close($ch);
+    logMessage($response);
+
+    $array1 = json_decode($payload, true);
+    $array2 = [
+        'value' => $response,
+        'description' => 'MLE decoded message with network token '
+    ];
 
 
-$response = curl_exec($ch);
-curl_close($ch);
-logMessage($response);
-
-$array1 = json_decode($payload, true); 
-$array2 = [
-    'value' => $response,
-    'description' => 'MLE decoded message with network token '
-];
+    $merged_array = array_merge($array1, $array2);
+    $final_json_output = json_encode($merged_array);
 
 
+    echo($final_json_output);
 
 
-$merged_array = array_merge($array1, $array2);
-$final_json_output = json_encode($merged_array);
-
-
-echo ($final_json_output);
-
-    
 }
 
 
+function authOTP($method, $endpoint, $payload, $merchantKeyId, $merchantSecretKey, $merchantId)
+{
+
+    logMessage($payload);
+    $requestHost = 'apitest.visaacceptance.com';
+    logMessage('https://' . $requestHost . '/tms/v2/tokenized-cards/' . $endpoint);
+
+    $signature = generateHttpSignature('post', '/tms/v2/tokenized-cards/' . $endpoint, $payload, $merchantKeyId, $merchantSecretKey, $requestHost, $merchantId);
+
+    $ch = curl_init('https://' . $requestHost . '/tms/v2/tokenized-cards/' . $endpoint);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+    curl_setopt($ch, CURLOPT_VERBOSE, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json;charset=utf-8',
+        'v-c-merchant-id: ' . $merchantId,
+        'Date: ' . gmdate('D, d M Y H:i:s T'),
+        'Host: ' . $requestHost,
+        'Signature: ' . $signature,
+        'Digest: ' . 'SHA-256=' . base64_encode(hash('sha256', $payload, true)),
+        'User-Agent: Mozilla/5.0'
+    ]);
 
 
+    $response = curl_exec($ch);
+    curl_close($ch);
+    logMessage($response);
+
+    $array1 = json_decode($payload, true);
+    $array2 = json_decode($response, true);
+    $merged_array = array_merge($array1, $array2);
+    $final_json_output = json_encode($merged_array);
 
 
+    echo($final_json_output);
 
 
-
-function authOTP ($method,$endpoint,$payload,$merchantKeyId, $merchantSecretKey,$merchantId){
-
-logMessage($payload);
-$requestHost = 'apitest.visaacceptance.com';
-logMessage('https://' . $requestHost . '/tms/v2/tokenized-cards/'.$endpoint);
-
-$signature = generateHttpSignature('post', '/tms/v2/tokenized-cards/'.$endpoint, $payload, $merchantKeyId, $merchantSecretKey, $requestHost, $merchantId);
-
-$ch = curl_init('https://' . $requestHost . '/tms/v2/tokenized-cards/'.$endpoint);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-curl_setopt($ch, CURLOPT_VERBOSE, true);
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    'Content-Type: application/json;charset=utf-8',
-    'v-c-merchant-id: ' . $merchantId,
-    'Date: ' . gmdate('D, d M Y H:i:s T'),
-    'Host: ' . $requestHost,
-    'Signature: ' . $signature,
-    'Digest: ' . 'SHA-256=' . base64_encode(hash('sha256', $payload, true)),
-    'User-Agent: Mozilla/5.0'
-]);
-
-
-
-
-
-
-$response = curl_exec($ch);
-curl_close($ch);
-logMessage($response);
-
-$array1 = json_decode($payload, true); 
-$array2 = json_decode($response, true);
-$merged_array = array_merge($array1, $array2);
-$final_json_output = json_encode($merged_array);
-
-
-echo ($final_json_output);
-
-    
 }
 
 
-
-
-
-
-
-
-
-
-
-function generateGUID() {
+function generateGUID()
+{
 
     $data = openssl_random_pseudo_bytes(16);
 
- 
+
     $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
 
     $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
@@ -381,35 +325,13 @@ function generateGUID() {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function generateHttpSignature($method, $resource, $payload, $merchantKeyId, $merchantSecretKey, $requestHost, $merchantId) {
+function generateHttpSignature($method, $resource, $payload, $merchantKeyId, $merchantSecretKey, $requestHost, $merchantId)
+{
     $date = gmdate('D, d M Y H:i:s T');
     $digest = 'SHA-256=' . base64_encode(hash('sha256', $payload, true));
 
     $signatureString = "host: $requestHost\n";
     $signatureString .= "date: $date\n";
-
-
 
 
     $signatureString .= "request-target: $method $resource\n";
@@ -421,4 +343,3 @@ function generateHttpSignature($method, $resource, $payload, $merchantKeyId, $me
 
     return "keyid=\"$merchantKeyId\", algorithm=\"HmacSHA256\", headers=\"host date request-target digest v-c-merchant-id\", signature=\"$signature\"";
 }
-
