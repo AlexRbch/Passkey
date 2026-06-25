@@ -8,13 +8,13 @@
       },
       "orderInformation": {
         "amountDetails": {
-          "totalAmount": "102.21",
+          "totalAmount": "102.00",
           "currency": "840"
         }
       },
       "merchantInformation": {
         "merchantDescriptor": {
-       "name": "S2F0ZXJpbmEgdGVzdCB0aGUgYmVzdCA",
+       "name": "VGVzdG1lcmNoYW50",
       "url": "aHR0cHM6Ly93d3cuTWVyY2hhbnQtVlphRjVYQmouY29t"
         }
       },
@@ -64,17 +64,17 @@
     "authenticatorRenderMethod": "IFRAME",
     "orderInformation": {
         "amountDetails": {
-                  "totalAmount": "102.21",
+                  "totalAmount": "102.00",
           "currency": "840"
         },
         "billTo": {
-            "email": "homer@aol.com",
+            "email": "test@mail.com",
             "phoneNumber": "555-5555"
         }
     },
     "merchantInformation": {
         "merchantDescriptor": {
-          "name": "S2F0ZXJpbmEgdGVzdCB0aGUgYmVzdCA",
+          "name": "VGVzdG1lcmNoYW50",
            "url": "aHR0cHM6Ly93d3cuTWVyY2hhbnQtVlphRjVYQmouY29t"
         }
     },
@@ -108,7 +108,7 @@
     "billTo": {
             "firstName": "John",
             "lastName": "Doe",
-            "email": "test@cybs.com",
+            "email": "test@mail.com",
             "address1": "1 Market St",
             "locality": "San Francisco",
             "administrativeArea": "CA",
@@ -116,13 +116,13 @@
             "country": "US"
         },
     "amountDetails": {
-      "totalAmount": "102.21",
+      "totalAmount": "102.00",
       "currency": "840"
     }
   },
   "merchantInformation": {
     "merchantDescriptor": {
-  "name": "TWVyY2hhbnQgVlphRjVYQmo",
+  "name": "VGVzdG1lcmNoYW50",
       "url": "aHR0cHM6Ly93d3cuTWVyY2hhbnQtVlphRjVYQmouY29t"
     }
   },
